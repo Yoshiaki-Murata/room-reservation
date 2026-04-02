@@ -2,9 +2,8 @@
 header("Content-type:application/json");
 require_once __DIR__ . "/../../config/functions.php";
 
-
+// 予約情報の取得
 $date = $_GET["date"] ?? date("Y-m-d");
-
 try {
     $db = db_connect();
     $sql = "SELECT 
@@ -32,3 +31,6 @@ ORDER BY r.room_id, r.start_datetime";
         "error"=>$e->getMessage()
     ]);
 }
+
+
+// 部屋の情報を取得
