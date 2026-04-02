@@ -1,10 +1,6 @@
 async function fetchReservations(date) {
   try {
-    const res = await fetch(`/room_reserve/api/reservations/get.php?date=${date}`);
-    //./api/reservations/get.php?date=${date}
-    // console.log(res);
-    // const text=await res.text();
-    // console.log(text)
+    const res = await fetch(`api/reservations/get.php?date=${date}`);
     const data = await res.json();
     return data;
   } catch (error) {
