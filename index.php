@@ -30,6 +30,18 @@
     </script>
 </div>
 
+<div id="reservationModal" class="modal">
+<div class="modal-content">
+    <span class="close-buttton">&times;</span>
+    <h2>予約詳細</h2>
+    <p><strong>部屋名:</strong><span class="modalRoomName"></span></p>
+    <p><strong>予約者:</strong><span class="modalUserName"></span></p>
+    <p><strong>件名:</strong><span class="modalTitle"></span></p>
+    <p><strong>時間:</strong><span class="modalTime"></span></p>
+</div>
+
+</div>
+
 <!-- <div class="room-numbers">
     <div class="rooms">
         <h3>部屋名</h3>
