@@ -10,7 +10,7 @@
 <div class="calender">
      <div>
         <label for="inputDate">日付を選択してください</label>
-        <input type="date" name="inputDate" id="inputDate" value="value="<?php echo date('Y-m-d'); ?>"" />
+        <input type="date" name="inputDate" id="inputDate" value="<?php echo date('Y-m-d'); ?>"/>
         <p>選択された日付: <span id="dateResult"></span></p>
     </div>
     <script>
@@ -30,7 +30,7 @@
     </script>
 </div>
 
-<div class="room-numbers">
+<!-- <div class="room-numbers">
     <div class="rooms">
         <h3>部屋名</h3>
         <ul class="d-flex flex-row">
@@ -60,7 +60,7 @@
             <li class="time-of-room-number● 23:00">23時</li>
         </ul>
     </div>
-</div>
+</div> -->
 
 </main>
 

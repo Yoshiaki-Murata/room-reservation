@@ -83,8 +83,7 @@ function render(groupedData) {
     slots.forEach(s => {
       const div = document.createElement('div');
       div.style.display = 'inline-block';
-      // 1時間あたりの幅を少し広めに設定（HTMLの目盛りと合わせるため）
-      div.style.width = '30px'; 
+      div.style.width = '30px';
       div.style.height = '25px';
       div.style.margin = '1px';
       div.style.border = '1px solid #ddd';
@@ -101,10 +100,9 @@ function render(groupedData) {
 }
 
 /**
- * 【重要】日付を受け取って「取得→描画」までを行う関数
+ *日付を受け取って「取得→描画」までを行う関数
  */
 async function updateView(date) {
-  console.log("表示更新の日付:", date);
   const data = await fetchReservations(date);
   const grouped = groupByRoom(data);
   render(grouped);
