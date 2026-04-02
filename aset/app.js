@@ -18,17 +18,22 @@ async function fetchReservations(date) {
  */
 function groupByRoom(data) {
   const grouped = {};
-  if (!data || !Array.isArray(data)) return grouped;
 
   data.forEach(r => {
+    // 部屋がまだ登録されていなければ作成
     if (!grouped[r.room_id]) {
       grouped[r.room_id] = {
         room_name: r.room_name,
         reservations: []
       };
     }
-    grouped[r.room_id].reservations.push(r);
+    
+    // 予約データ（user_nameなど）が存在する場合のみ配列に追加
+    if (r.user_name) {
+      grouped[r.room_id].reservations.push(r);
+    }
   });
+
   return grouped;
 }
 
@@ -63,12 +68,7 @@ function render(groupedData) {
   const app = document.getElementById('app');
   app.innerHTML = '';
 
-  // データが空の場合のメッセージ
-  if (Object.keys(groupedData).length === 0) {
-    app.innerHTML = '<p>この日の予約はありません。</p>';
-    return;
-  }
-
+  // 部屋ループ
   Object.values(groupedData).forEach(room => {
     const container = document.createElement('div');
     container.style.marginBottom = "20px";
@@ -78,18 +78,24 @@ function render(groupedData) {
     container.appendChild(title);
 
     const timeline = document.createElement('div');
+    timeline.style.display = 'flex'; // 横並びを安定させる
+
     const slots = createTimeline(room.reservations);
 
     slots.forEach(s => {
       const div = document.createElement('div');
-      div.style.display = 'inline-block';
-      div.style.width = '30px';
+      div.style.width = '30px'; 
       div.style.height = '25px';
-      div.style.margin = '1px';
+      div.style.marginRight = '2px';
       div.style.border = '1px solid #ddd';
-      div.style.backgroundColor = s ? '#3498db' : '#f0f0f0';
+      
+      // 予約があれば青、なければグレー
+      div.style.backgroundColor = s ? '#3498db' : '#e0e0e0';
 
-      if (s) div.title = s; // ホバーで名前表示
+      if (s) {
+        div.title = s; // 予約者の名前をツールチップに
+        div.style.cursor = 'pointer';
+      }
 
       timeline.appendChild(div);
     });
