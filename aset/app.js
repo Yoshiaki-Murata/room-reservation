@@ -27,7 +27,7 @@ function groupByRoom(data) {
         reservations: []
       };
     }
-    
+
     // 予約データ（user_nameなど）が存在する場合のみ配列に追加
     if (r.user_name) {
       grouped[r.room_id].reservations.push(r);
@@ -55,11 +55,31 @@ function createTimeline(reservations) {
     const start = timeToIndex(r.start_datetime);
     const end = timeToIndex(r.end_datetime);
     for (let i = start; i < end; i++) {
-      slots[i] = r.user_name;
+      // slots[i] = r.user_name;
+      slots[i] = r;
     }
   });
   return slots;
 }
+
+/**
+ * モーダルを表示する  
+ */
+function showModal(roomName, reservation) {
+  const modal = document.getElementById("reservationModal");
+
+  // 情報を送る
+  document.getElementById("modalRoomName").textContent = roomName;
+  document.getElementById("modalUserName").textContent = reservation.user_name;
+  document.getElementById("modalTitle").textContent = reservation.title;
+  document.getElementById("modalTime").textContent = `
+  ${reservation.start_datetime}～${reservation.end_datetime}
+  `;
+  // 表示
+  modal.style.display = "block";
+
+}
+
 
 /**
  * 画面に描画するメイン処理
@@ -84,17 +104,21 @@ function render(groupedData) {
 
     slots.forEach(s => {
       const div = document.createElement('div');
-      div.style.width = '30px'; 
+      div.style.width = '30px';
       div.style.height = '25px';
       div.style.marginRight = '2px';
       div.style.border = '1px solid #ddd';
-      
+
       // 予約があれば青、なければグレー
       div.style.backgroundColor = s ? '#3498db' : '#e0e0e0';
 
       if (s) {
         div.title = s; // 予約者の名前をツールチップに
+        div.style.backgroundColor = "#3498db";
         div.style.cursor = 'pointer';
+        div.addEventListener("click", () => {
+          showModal(room.room_name, s);
+        })
       }
 
       timeline.appendChild(div);
@@ -114,11 +138,84 @@ async function updateView(date) {
   render(grouped);
 }
 
+// 予約モーダル開く
+function openReserveModal() {
+  const rModal = document.getElementById("reserveModal");
+  // 表示
+  rModal.style.display = "block";
+}
+
+
+// 予約情報をまとめる
+function reserveInfo() {
+  // 各要素取得
+  const dayInfo = document.getElementById("inputDateReserve");
+  const roomInfo = document.getElementById("selectRoom");
+  const startTimeInfo = document.getElementById("startTime");
+  const endTimeInfo = document.getElementById("endTime");
+  const reserveDo = document.getElementById("reserveDo");
+  // console.log(dayInfo, roomInfo, startTimeInfo, endTimeInfo);
+
+  // クリック情報初期化
+  let day = dayInfo.value;
+  let room = roomInfo.value;
+  let start = startTimeInfo.value;
+  let end = endTimeInfo.value;
+  // 各種情報を取得
+  dayInfo.addEventListener("change", (e) => {
+    day = e.target.value;
+    // console.log(day);
+  })
+
+  roomInfo.addEventListener("change", (e) => {
+    room = e.target.value;
+    // console.log(room);
+  })
+
+  startTimeInfo.addEventListener("change", (e) => {
+    start = e.target.value;
+    // console.log(start);
+  })
+
+  endTimeInfo.addEventListener("change", (e) => {
+    end = e.target.value;
+    // console.log(end);
+  })
+
+  // 予約押したときの情報を取る
+  reserveDo.addEventListener("click", async() => {
+    const data = {
+      date: day,
+      room_id: room,
+      start_time: start,
+      end_time: end
+    }
+    console.log(data);
+    try{
+      const response= await fetch("api/reservations/create.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+      });
+      const result=await response.json()
+
+    }catch(error){
+
+    }
+  })
+
+
+}
+
+
+
 /**
  * 初期化処理
  */
 function init() {
   const iD = document.getElementById("inputDate");
+  const modal = document.getElementById("reservationModal");
+  const closeModal = document.getElementById("closeModal");
 
   // 1. 日付が変更されたら updateView を呼ぶように設定
   iD.addEventListener("change", (e) => {
@@ -129,7 +226,30 @@ function init() {
   if (iD.value) {
     updateView(iD.value);
   }
+
+  // モーダル閉じる
+  closeModal.addEventListener("click", () => {
+    modal.style.display = "none"
+  })
+
+  // 予約モーダル開く＆閉じる
+  // 開く
+  const reserveOpen = document.getElementById("reserveOpen");
+  reserveOpen.addEventListener("click", () => {
+    openReserveModal();
+  })
+  // 閉じる
+  const closeReserve = document.getElementById("closeReserve");
+  const reserveModal = document.getElementById("reserveModal");
+  closeReserve.addEventListener("click", () => {
+    reserveModal.style.display = "none"
+  })
+
+
+  reserveInfo();
 }
+
 
 // 実行！
 init();
+
