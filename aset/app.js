@@ -147,6 +147,7 @@ function openReserveModal() {
 
 
 // 予約情報をまとめる
+
 function reserveInfo() {
   // 各要素取得
   const dayInfo = document.getElementById("inputDateReserve");
@@ -164,22 +165,18 @@ function reserveInfo() {
   // 各種情報を取得
   dayInfo.addEventListener("change", (e) => {
     day = e.target.value;
-    // console.log(day);
   })
 
   roomInfo.addEventListener("change", (e) => {
     room = e.target.value;
-    // console.log(room);
   })
 
   startTimeInfo.addEventListener("change", (e) => {
     start = e.target.value;
-    // console.log(start);
   })
 
   endTimeInfo.addEventListener("change", (e) => {
     end = e.target.value;
-    // console.log(end);
   })
 
   // 予約押したときの情報を取る
@@ -190,7 +187,6 @@ function reserveInfo() {
       start_time: start,
       end_time: end
     }
-    console.log(data);
     try{
       const response= await fetch("api/reservations/create.php",{
         method:"POST",
